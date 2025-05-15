@@ -1,11 +1,18 @@
-﻿console.log("QR scanner script loaded");
+function onScanSuccess(decodedText, decodedResult) {
+    // Vis resultat på siden
+    document.getElementById("resultat").innerText = decodedText;
 
-window.addEventListener('DOMContentLoaded', function () {
-    const html5QrcodeScanner = new Html5QrcodeScanner(
-        "reader", { fps: 10, qrbox: 250 });
-
-    html5QrcodeScanner.render(function (decodedText, decodedResult) {
-        alert("QR-kode læst: " + decodedText);
-        html5QrcodeScanner.clear();
+    // Stop scanner efter ét succesfuldt scan
+    html5QrcodeScanner.clear().then(() => {
+        console.log("Scanner stoppet");
+    }).catch(error => {
+        console.error("Fejl ved stop af scanner", error);
     });
-});
+}
+
+const html5QrcodeScanner = new Html5QrcodeScanner(
+    "reader",
+    { fps: 10, qrbox: 250 },
+    /* verbose= */ false
+);
+html5QrcodeScanner.render(onScanSuccess);
